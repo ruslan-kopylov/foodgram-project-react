@@ -21,7 +21,6 @@ from .serializers import (FavoriteSerializer, IngredientSerializer,
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    pagination_class = LimitOffsetPagination
 
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -29,7 +28,6 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('^name',)
-    pagination_class = LimitOffsetPagination
 
 
 class RecipesViewSet(viewsets.ModelViewSet):
@@ -74,7 +72,6 @@ class SubscribesView(CreateDestroyModelMixin):
 
 class FavoriteView(CreateDestroyModelMixin):
     serializer_class = FavoriteSerializer
-    pagination_class = LimitOffsetPagination
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
