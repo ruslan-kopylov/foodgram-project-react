@@ -9,18 +9,13 @@ from rest_framework.permissions import IsAuthenticated
 from users.models import CustomUser, Subscribe
 
 from .filters import RecipeFilter
+from .mixins import CreateDestroyModelMixin
 from .permissions import AuthorOrReadOnly
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           IngrRecipeSerializerGet, RecipeSerializerGet,
                           RecipeSerializerPost, ShoppingCartSerializer,
                           SubscribeSerializer, SubscriptionsSerializer,
                           TagSerializer)
-
-
-class CreateDestroyModelMixin(
-    mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
-):
-    pass
 
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):

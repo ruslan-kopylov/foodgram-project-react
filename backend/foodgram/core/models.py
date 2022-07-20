@@ -9,5 +9,5 @@ class CreatedModel(models.Model):
     )
 
     class Meta:
-        ordering = ["-created"]
+        ordering = ("-created",)
         abstract = True
