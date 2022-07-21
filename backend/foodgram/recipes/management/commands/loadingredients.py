@@ -4,6 +4,7 @@ from recipes.models import Ingredient
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        #with open('/home/ruslan/Dev/diplom/foodgram-project-react/backend/foodgram/ingredients.json', 'rb') as file:
         with open('/app/ingredients.json', 'rb') as file:
             data = json.load(file)
 

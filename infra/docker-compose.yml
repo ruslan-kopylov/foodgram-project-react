@@ -12,7 +12,7 @@ services:
     restart: always
     volumes:
       - backend_static:/app/backend_static/
-      - media_value:/app/media/
+      - media:/app/media/
     depends_on:
       - db
     env_file:
@@ -34,10 +34,10 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
       - backend_static:/app/backend_static/
-      - media_value:/app/media/
+      - media:/app/media/
     depends_on:
       - frontend
 volumes:
   db:
   backend_static:
-  media_value:
+  media:

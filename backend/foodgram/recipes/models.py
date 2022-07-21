@@ -53,7 +53,8 @@ class RecipeIngr(models.Model):
 class Favorite(models.Model):
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='favorites')
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, related_name='favorite')
 
 
 class ShoppingCart(models.Model):

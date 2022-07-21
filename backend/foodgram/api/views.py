@@ -8,8 +8,9 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from users.models import CustomUser, Subscribe
 
-from .filters import RecipeFilter
+from .filters import RecipeFilter, IngredientFilter
 from .mixins import CreateDestroyModelMixin
+from .paginations import RecipePagination
 from .permissions import AuthorOrReadOnly
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           IngrRecipeSerializerGet, RecipeSerializerGet,
@@ -26,8 +27,8 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('^name',)
+    filterset_class = IngredientFilter
+
 
 
 class RecipesViewSet(viewsets.ModelViewSet):
