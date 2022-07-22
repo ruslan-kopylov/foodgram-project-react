@@ -1,7 +1,7 @@
 # Дипломный проект [Foodgram]
 
 Доступ к админке:
-login - admin
+login - admin,
 password - admin
 
 ***
