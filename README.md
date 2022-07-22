@@ -45,7 +45,6 @@ sudo docker exec -it infra-backend-1 bash
 python manage.py migrate
 
 python manage.py loaddata
-
 ```
 Фронт доступен по адресу :
 
