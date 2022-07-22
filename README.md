@@ -4,6 +4,8 @@
 login - admin,
 password - admin
 
+образ загружен на [DockerHub]
+
 ***
 Foodgram - cайт для размещения рецептов от пользователей.
 ***
@@ -62,3 +64,4 @@ http://localhost/api/docs/
 ```
 
 [Foodgram]:http://51.250.26.145/signin
+[DockerHub]:https://hub.docker.com/repository/docker/prbzdj/foodgram
