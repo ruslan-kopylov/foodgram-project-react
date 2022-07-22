@@ -52,19 +52,10 @@ class SubscribeSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
     def to_representation(self, instance):
-        serializer = UserSerializerReadOnly(
+        serializer = SubscriptionsSerializer(
             instance.author, context=self.context
         )
-        recipes = Recipe.objects.filter(author=instance.author)
-        representation = OrderedDict(serializer.data)
-        representation['recipes'] = []
-        recipe_count = 0
-        for recipe in recipes:
-            serializer = RecipeSerializerFavorite(recipe)
-            representation['recipes'].append(serializer.data)
-            recipe_count += 1
-        representation['recipe_count'] = recipe_count
-        return representation
+        return OrderedDict(serializer.data)
 
     def validate(self, data):
         user = self.context['request'].user
@@ -243,21 +234,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
         return data
 
 
-class SubscriptionsSerializer(UserSerializerReadOnly):
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        recipes = Recipe.objects.filter(author=instance)
-        representation['recipes'] = []
-        recipe_count = 0
-        for recipe in recipes:
-            serializer = RecipeSerializerFavorite(recipe)
-            representation['recipes'].append(serializer.data)
-            recipe_count += 1
-        representation['recipe_count'] = recipe_count
-        return representation
-
-
 class ShoppingCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingCart
@@ -275,3 +251,31 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
         if ShoppingCart.objects.filter(recipe_id=recipe, user=user):
             raise serializers.ValidationError("Рецепт уже добавлен в корзину")
         return data
+
+
+class SubscriptionsSerializer(UserSerializerReadOnly):
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+            'recipes',
+            'recipes_count'
+        )
+        read_only_fields = fields
+
+    def get_recipes(self, obj):
+        limit = int(self.context['request'].GET.get('recipes_limit', 6))
+        return RecipeSerializerGet(
+            instance=obj.recipes.all()[:limit],
+            many=True, context=self.context).data
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.all().count()

@@ -4,5 +4,4 @@ COPY requirements.txt /app
 RUN python -m pip install --upgrade pip
 RUN pip3 install -r /app/requirements.txt --no-cache-dir
 COPY ./ /app
-RUN python manage.py collectstatic
 CMD ["gunicorn", "foodgram.wsgi:application", "--bind", "0:8000" ] 

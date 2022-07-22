@@ -21,7 +21,7 @@ class Recipe(CreatedModel):
     )
 
     def __str__(self):
-        return self.name
+        return str(self.id)
 
 
 class Ingredient(models.Model):
@@ -38,7 +38,7 @@ class Tag(models.Model):
         max_length=200,
         validators=[validate_slug]
     )
-    recipes = models.ManyToManyField(Recipe, related_name='tags')
+    recipes = models.ManyToManyField(Recipe, related_name='tags', blank=True)
 
 
 class RecipeIngr(models.Model):
@@ -52,12 +52,12 @@ class RecipeIngr(models.Model):
 
 class Favorite(models.Model):
     user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='favorites')
+        CustomUser, on_delete=models.CASCADE)
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name='favorite')
 
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='shopping_cart')
+        CustomUser, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)

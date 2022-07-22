@@ -2,15 +2,14 @@ import csv
 
 from django.http import HttpResponse
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
-from rest_framework import filters, mixins, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from users.models import CustomUser, Subscribe
 
-from .filters import RecipeFilter, IngredientFilter
+from .filters import IngredientFilter, RecipeFilter
 from .mixins import CreateDestroyModelMixin
-from .paginations import RecipePagination
+from .pagination import CustomPaginator
 from .permissions import AuthorOrReadOnly
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           IngrRecipeSerializerGet, RecipeSerializerGet,
@@ -30,11 +29,10 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = IngredientFilter
 
 
-
 class RecipesViewSet(viewsets.ModelViewSet):
     permission_classes = [AuthorOrReadOnly]
     queryset = Recipe.objects.all()
-    pagination_class = LimitOffsetPagination
+    pagination_class = CustomPaginator
     filterset_class = RecipeFilter
 
     def perform_create(self, serializer):
@@ -49,7 +47,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
 class SubscribesListView(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
-    pagination_class = LimitOffsetPagination
+    pagination_class = CustomPaginator
     serializer_class = SubscriptionsSerializer
 
     def get_queryset(self):
@@ -113,10 +111,10 @@ def download_shopping_cart(request):
         },
     )
     writer = csv.writer(response)
-    shopping_carts = request.user.shopping_cart.all()
+    recipes = request.user.shopping_cart.all()
     output_data = {}
-    for cart in shopping_carts:
-        ingredients = cart.recipe.ingredients.all()
+    for recipe in recipes:
+        ingredients = recipe.ingredients.all()
         for ingredient in ingredients:
             data = IngrRecipeSerializerGet(ingredient).data
             if data['name'] in output_data.keys():
@@ -131,5 +129,4 @@ def download_shopping_cart(request):
             data, output_data[data]['amount'],
             output_data[data]['measurement_unit'])
         )
-
     return response

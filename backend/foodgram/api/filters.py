@@ -1,7 +1,5 @@
 from django_filters import rest_framework as filters
-from recipes.models import Favorite, Ingredient, Recipe, Tag
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.db.models import Value
+from recipes.models import Ingredient, Recipe, Tag
 
 
 class IngredientFilter(filters.FilterSet):
@@ -34,21 +32,11 @@ class RecipeFilter(filters.FilterSet):
     )
 
     def filter_favorited(self, queryset, name, value):
-        favorites =[obj for obj in self.request.user.favorites.all()]
-        recipes = []
-        for obj in favorites:
-            recipes.append(obj.recipe)
-        recipes = Recipe.objects.filter(favorite__recipe__in=recipes)
-        return recipes
+        return self.request.user.favorites.all().filter(pk__in=queryset)
 
     def filter_shopping_cart(self, queryset, name, value):
-        shopping_cart =[obj for obj in self.request.user.shopping_cart.all()]
-        recipes = []
-        for obj in shopping_cart:
-            recipes.append(obj.recipe)
-        recipes = Recipe.objects.filter(favorite__recipe__in=recipes)
-        return recipes
+        return self.request.user.shopping_cart.all()
 
     class Meta:
         model = Recipe
-        fields = ('tags',)
+        fields = ('tags', 'is_favorited', 'is_in_shopping_cart', 'author')
